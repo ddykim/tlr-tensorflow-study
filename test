@@ -1,0 +1,87 @@
+
+import numpy as np
+import os
+import xml.etree.ElementTree as ET
+import scipy.io
+
+
+class BoundingBox:
+    def __init__(self, x_min, y_min, w, h, category):
+        self.x_min = x_min
+        self.y_min = y_min
+        self.w = w
+        self.h = h
+        self.category = category
+
+tl_data_path = '/home/daeyoung-snu/YoloTensorFlow229-modified/LISA_TL_dataset/'
+annotation_path = '/home/daeyoung-snu/YoloTensorFlow229-modified/LISA_TL_dataset/Annotations/0.txt'
+
+annotations_dir = os.path.join(tl_data_path, 'Annotations')
+
+# print(annotations_dir)
+# print(os.listdir(annotations_dir))
+
+annotation1 = np.genfromtxt(annotation_path, delimiter='\t', dtype=int)
+# annotation2 = np.genfromtxt(annotation_path, delimiter='\t', dtype=str)
+
+# print(range(len(annotation1)))
+# print(range(2))
+
+for index in range(len(annotation1)):
+    category = annotation1[index, 0]
+    x_min = annotation1[index, 1]
+    y_min = annotation1[index, 2]
+    w = annotation1[index, 3]
+    h = annotation1[index, 4]
+    box = BoundingBox(x_min, y_min, w, h, category)
+
+print(annotation1)
+print(annotation1[0, 0], x_min, y_min, w, h)
+
+'''
+
+CLASSES = ["chair","go","ship","power"]
+
+class_to_ind = dict(zip(CLASSES, xrange(len(CLASSES))))
+
+h_ratio = 1.0 * 448 / 896
+w_ratio = 1.0 * 448 / 896
+# im = cv2.resize(im, [self.image_size, self.image_size])
+
+
+label = np.zeros((7, 7, 9))
+
+filename = '/home/daeyoung-snu/yolo_tensorflow-master/data/pascal_voc/VOCdevkit/VOC2007/Annotations/000005.xml'
+tree = ET.parse(filename)
+objs = tree.findall('object')
+
+for obj in objs:
+    bbox = obj.find('bndbox')
+    # Make pixel indexes 0-based
+
+    x1 = max(min((float(bbox.find('xmin').text) - 1) * w_ratio, 448 - 1), 0)
+    y1 = max(min((float(bbox.find('ymin').text) - 1) * h_ratio, 448 - 1), 0)
+    x2 = max(min((float(bbox.find('xmax').text) - 1) * w_ratio, 448 - 1), 0)
+    y2 = max(min((float(bbox.find('ymax').text) - 1) * h_ratio, 448 - 1), 0)
+    cls_ind = class_to_ind[obj.find('name').text.lower().strip()]
+
+    print(cls_ind)
+
+    boxes = [(x2 + x1) / 2.0, (y2 + y1) / 2.0, x2 - x1, y2 - y1]
+
+    x_ind = int(boxes[0] * 7 / 448)
+    y_ind = int(boxes[1] * 7 / 448)
+
+    if label[y_ind, x_ind, 0] == 1:
+        continue
+
+    label[y_ind, x_ind, 0] = 1
+    label[y_ind, x_ind, 1:5] = boxes
+    label[y_ind, x_ind, 5 + cls_ind] = 1
+
+    scipy.io.savemat('/home/daeyoung-snu/Desktop/label.mat', mdict={'label': label})
+
+#print(label, len(objs))
+
+print(x)
+'''
